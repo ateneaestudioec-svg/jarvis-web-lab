@@ -2,6 +2,8 @@ import Image from "next/image";
 import { client } from "../sanity/lib/client";
 import { urlForImage } from "../sanity/lib/image";
 
+export const dynamic = "force-dynamic";
+
 type HomePageContent = {
   heroTitle: string;
   heroDescription: string;
