@@ -1,4 +1,51 @@
-export default function Home() {
+import Image from "next/image";
+import { client } from "../sanity/lib/client";
+import { urlForImage } from "../sanity/lib/image";
+
+type HomePageContent = {
+  heroTitle: string;
+  heroDescription: string;
+  heroButtonText: string;
+  heroImage?: object;
+};
+
+const fallbackContent: HomePageContent = {
+  heroTitle: "Una web preparada para evolucionar contigo.",
+  heroDescription:
+    "Esta es la base de JARVIS WEB LAB: una experiencia sencilla, rápida y lista para incorporar nuevas capacidades paso a paso.",
+  heroButtonText: "Conocer el proyecto",
+};
+
+const homePageQuery = `*[_type == "homePage"][0]{
+  heroTitle,
+  heroDescription,
+  heroButtonText,
+  heroImage
+}`;
+
+async function getHomePageContent() {
+  if (!client) return fallbackContent;
+
+  try {
+    const content = await client.fetch<HomePageContent | null>(
+      homePageQuery,
+      {},
+      { cache: "no-store" },
+    );
+
+    return content ?? fallbackContent;
+  } catch (error) {
+    console.error("No se pudo cargar el contenido de Sanity:", error);
+    return fallbackContent;
+  }
+}
+
+export default async function Home() {
+  const content = await getHomePageContent();
+  const heroImageUrl = content.heroImage
+    ? urlForImage(content.heroImage)
+    : undefined;
+
   return (
     <main>
       <header className="site-header">
@@ -8,15 +55,25 @@ export default function Home() {
       </header>
 
       <section className="hero" id="inicio">
-        <p className="eyebrow">Experimento web · Fase 1</p>
-        <h1>Una web preparada para evolucionar contigo.</h1>
-        <p className="hero-description">
-          Esta es la base de JARVIS WEB LAB: una experiencia sencilla, rápida y
-          lista para incorporar nuevas capacidades paso a paso.
-        </p>
-        <a className="primary-button" href="#proyecto">
-          Conocer el proyecto
-        </a>
+        {heroImageUrl && (
+          <div className="hero-image" aria-hidden="true">
+            <Image
+              src={heroImageUrl}
+              alt=""
+              fill
+              priority
+              sizes="(max-width: 720px) 100vw, 45vw"
+            />
+          </div>
+        )}
+        <div className="hero-content">
+          <p className="eyebrow">Experimento web · Fase 3</p>
+          <h1>{content.heroTitle}</h1>
+          <p className="hero-description">{content.heroDescription}</p>
+          <a className="primary-button" href="#proyecto">
+            {content.heroButtonText}
+          </a>
+        </div>
       </section>
 
       <section className="project-section" id="proyecto">
