@@ -72,18 +72,18 @@ En Sanity Manage, dentro de **API → CORS origins**, agrega:
 
 Activa **Allow credentials** para poder iniciar sesión en el Studio integrado.
 
-## Configurar JARVIS con OpenAI
+## Configurar JARVIS con Gemini
 
-La conversación usa la Responses API desde el endpoint servidor
-`/api/jarvis`. La clave nunca se envía al navegador.
+La conversación usa el SDK oficial `@google/genai` y el modelo estable
+`gemini-2.5-flash` desde el endpoint servidor `/api/jarvis`. La clave nunca se
+envía al navegador.
 
 Agrega estas variables únicamente en `.env.local` y en las variables de entorno
 de Vercel:
 
 ```env
-OPENAI_API_KEY=tu_clave_de_openai
-OPENAI_MODEL=gpt-5.6-sol
+GEMINI_API_KEY=tu_clave_de_gemini
 ```
 
-No uses el prefijo `NEXT_PUBLIC_` para `OPENAI_API_KEY`. Después de configurar
+No uses el prefijo `NEXT_PUBLIC_` para `GEMINI_API_KEY`. Después de configurar
 la clave, reinicia el servidor local o realiza un nuevo deployment en Vercel.
