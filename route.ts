@@ -18,6 +18,14 @@ type ChatMessage = {
   content: string;
 };
 
+export async function GET() {
+  return NextResponse.json({
+    status: "ok",
+    provider: "gemini",
+    configured: Boolean(process.env.GEMINI_API_KEY),
+  });
+}
+
 function isValidMessage(value: unknown): value is ChatMessage {
   if (!value || typeof value !== "object") return false;
 

@@ -54,10 +54,24 @@ export function JarvisChat() {
           })),
         }),
       });
-      const data = (await response.json()) as {
-        reply?: string;
-        error?: string;
-      };
+      const rawResponse = await response.text();
+      let data: { reply?: string; error?: string } = {};
+
+      try {
+        data = JSON.parse(rawResponse) as {
+          reply?: string;
+          error?: string;
+        };
+      } catch {
+        console.error("Respuesta no JSON de /api/jarvis:", {
+          status: response.status,
+          contentType: response.headers.get("content-type"),
+          preview: rawResponse.slice(0, 300),
+        });
+        throw new Error(
+          "El servidor de JARVIS no devolvió una respuesta válida.",
+        );
+      }
 
       if (!response.ok || !data.reply) {
         throw new Error(data.error ?? "JARVIS no pudo responder.");
