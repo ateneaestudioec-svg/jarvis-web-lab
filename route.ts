@@ -56,20 +56,20 @@ export async function POST(request: Request) {
 
   try {
     const ai = new GoogleGenAI({ apiKey });
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: messages.map((message) => ({
-        role: message.role === "assistant" ? "model" : "user",
-        parts: [{ text: message.content }],
-      })),
-      config: {
-        systemInstruction: JARVIS_SYSTEM_PROMPT,
-        maxOutputTokens: 600,
-        temperature: 0.7,
-      },
+    const transcript = messages
+      .map(
+        (message) =>
+          `${message.role === "assistant" ? "JARVIS" : "Usuario"}: ${message.content}`,
+      )
+      .join("\n\n");
+    const interaction = await ai.interactions.create({
+      model: "gemini-3.5-flash",
+      system_instruction: JARVIS_SYSTEM_PROMPT,
+      input: `Continúa esta conversación y responde al último mensaje del usuario:\n\n${transcript}`,
+      store: false,
     });
 
-    const reply = response.text?.trim();
+    const reply = interaction.output_text?.trim();
 
     if (!reply) {
       throw new Error("Gemini devolvió una respuesta vacía.");

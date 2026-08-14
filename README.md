@@ -74,9 +74,9 @@ Activa **Allow credentials** para poder iniciar sesión en el Studio integrado.
 
 ## Configurar JARVIS con Gemini
 
-La conversación usa el SDK oficial `@google/genai` y el modelo estable
-`gemini-2.5-flash` desde el endpoint servidor `/api/jarvis`. La clave nunca se
-envía al navegador.
+La conversación usa el SDK oficial `@google/genai`, la Interactions API y el
+modelo estable `gemini-3.5-flash` desde el endpoint servidor `/api/jarvis`. La
+clave nunca se envía al navegador.
 
 Agrega estas variables únicamente en `.env.local` y en las variables de entorno
 de Vercel:
